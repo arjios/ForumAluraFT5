@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.alura.forum.dto.CursoDTO;
@@ -24,6 +26,12 @@ public class CursoService {
 		List<Curso> cursos =  new ArrayList<>();
 		cursos = cursoRepository.findAll();
 		return cursos.stream().map(c -> new CursoDTO(c)).collect(Collectors.toList());
+	}
+	
+	@Transactional
+	public Page<CursoDTO> buscaCursosPAginados(Pageable pageable) {
+		Page<Curso> pages = cursoRepository.findAll(pageable);
+		return pages.map(p -> new CursoDTO(p));
 	}
 	
 	@Transactional
