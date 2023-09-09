@@ -11,23 +11,28 @@ import com.alura.forum.dto.CursoDTO;
 import com.alura.forum.entities.Curso;
 import com.alura.forum.repositories.CursoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CursoService {
 
 	@Autowired
 	private CursoRepository cursoRepository;
 	
+	@Transactional
 	public List<CursoDTO> buscaTodosCursos() {
 		List<Curso> cursos =  new ArrayList<>();
 		cursos = cursoRepository.findAll();
 		return cursos.stream().map(c -> new CursoDTO(c)).collect(Collectors.toList());
 	}
 	
+	@Transactional
 	public CursoDTO buscaCursoPorId(Long id) {
 		Curso curso = cursoRepository.findById(id).get();
 		return new CursoDTO(curso);
 	}
 	
+	@Transactional
 	public CursoDTO inserirCurso(CursoDTO dto) {
 		Curso curso = new Curso();
 		curso.setCategoria(dto.getCategoria());
@@ -36,7 +41,8 @@ public class CursoService {
 		return new CursoDTO(curso);
 	}	
 	
-	public CursoDTO atulizarCurso(Long id, CursoDTO dto) {
+	@Transactional
+	public CursoDTO atualizarCurso(Long id, CursoDTO dto) {
 		Curso curso = cursoRepository.findById(id).get();
 		curso.setCategoria(dto.getCategoria());
 		curso.setNome(dto.getNome());
@@ -44,6 +50,7 @@ public class CursoService {
 		return new CursoDTO(curso);
 	}	
 	
+	@Transactional
 	public void excluirCurso(Long id) {
 		cursoRepository.deleteById(id);
 	}	
