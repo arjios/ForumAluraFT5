@@ -13,6 +13,7 @@ import com.alura.forum.dto.UsuarioDTO;
 import com.alura.forum.dto.UsuarioNovoDTO;
 import com.alura.forum.entities.Usuario;
 import com.alura.forum.repositories.UsuarioRepository;
+import com.alura.forum.services.exceptions.ServiceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -37,8 +38,11 @@ public class UsuarioService {
 	
 	@Transactional
 	public UsuarioDTO buscarUsuarioPorId(Long id) {
+		String msgErro = "Erro: Busca do Usuario com id " + id + " não encontrado.";
 		Usuario usuario = new Usuario();
-		usuario = usuarioRepository.findById(id).get();
+		usuario = usuarioRepository
+				.findById(id)
+				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
 		return new UsuarioDTO(usuario);
 	}
 	
@@ -54,7 +58,10 @@ public class UsuarioService {
 	
 	@Transactional
 	public UsuarioDTO atualizarUsuario(Long id, UsuarioNovoDTO dto) {
-		Usuario usuario = usuarioRepository.findById(id).get();
+		String msgErro = "Erro: Não existe Usuario com id " + id + " para atualizar.";
+		Usuario usuario = usuarioRepository
+				.findById(id)
+				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
 		usuario.setSenha(dto.getSenha());
 		usuario = usuarioRepository.save(usuario);
 		return new UsuarioDTO(usuario);

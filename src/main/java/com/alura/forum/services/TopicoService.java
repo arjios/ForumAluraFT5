@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.alura.forum.dto.TopicoDTO;
 import com.alura.forum.entities.Topico;
 import com.alura.forum.repositories.TopicoRepository;
+import com.alura.forum.services.exceptions.ServiceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -37,7 +38,10 @@ public class TopicoService {
 
 	@Transactional
 	public TopicoDTO buscaTopicoPorId(Long id) {
-		Topico topico = topicoRepository.findById(id).get();
+		String msgErro = "Erro: Busca do Topico com id " + id + " não encontrado.";
+		Topico topico = topicoRepository
+				.findById(id)
+				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
 		return new TopicoDTO(topico);
 	}
 	
@@ -55,8 +59,11 @@ public class TopicoService {
 	
 	@Transactional
 	public TopicoDTO atualizarTopico(Long id, TopicoDTO dto) {
+		String msgErro = "Erro: Não existe Topico com id " + id + " para atualizar.";
 		Topico topico = new Topico();
-		topico = topicoRepository.findById(id).get();
+		topico = topicoRepository
+				.findById(id)
+				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
 		topico.setMensagem(dto.getMensagem());
 		topico.setStatus(dto.getStatus());
 		topico = topicoRepository.save(topico);

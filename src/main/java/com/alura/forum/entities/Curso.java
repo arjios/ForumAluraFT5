@@ -24,6 +24,10 @@ public class Curso {
 	@JoinColumn(name = "topico_id")
 	private Topico topico;
 	
+	@ManyToOne
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
+	
 	public Curso() {
 	}
 

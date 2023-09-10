@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.alura.forum.dto.CursoDTO;
 import com.alura.forum.entities.Curso;
 import com.alura.forum.repositories.CursoRepository;
+import com.alura.forum.services.exceptions.ServiceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -36,7 +37,10 @@ public class CursoService {
 	
 	@Transactional
 	public CursoDTO buscaCursoPorId(Long id) {
-		Curso curso = cursoRepository.findById(id).get();
+		String msgErro = "Erro: Busca do Curso com id " + id + " não encontrado.";
+		Curso curso = cursoRepository
+				.findById(id)
+				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
 		return new CursoDTO(curso);
 	}
 	
@@ -51,7 +55,10 @@ public class CursoService {
 	
 	@Transactional
 	public CursoDTO atualizarCurso(Long id, CursoDTO dto) {
-		Curso curso = cursoRepository.findById(id).get();
+		String msgErro = "Erro: Não existe Curso com id " + id + " para atualizar.";
+		Curso curso = cursoRepository
+				.findById(id)
+				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
 		curso.setCategoria(dto.getCategoria());
 		curso.setNome(dto.getNome());
 		curso = cursoRepository.save(curso);
