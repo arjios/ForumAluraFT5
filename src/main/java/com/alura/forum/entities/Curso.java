@@ -24,9 +24,9 @@ public class Curso implements Serializable{
 	private String nome;
 	private String categoria;
 	
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "curso")
-	private Set<Usuario> usuarios;
+//	@OneToMany(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "curso")
+//	private Set<Usuario> usuarios;
 	
 	public Curso() {
 	}
@@ -61,9 +61,9 @@ public class Curso implements Serializable{
 		this.categoria = categoria;
 	}
 
-	public Set<Usuario> getUsuarios() {
-		return usuarios;
-	}
+//	public Set<Usuario> getUsuarios() {
+//		return usuarios;
+//	}
 
 	@Override
 	public int hashCode() {

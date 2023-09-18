@@ -58,7 +58,7 @@ public class CursoDTO {
 		this.categoria = categoria;
 	}
 
-	public Set<UsuarioDTO> getUsuarios() {
-		return usuariosDTO;
-	}
+//	public Set<UsuarioDTO> getUsuarios() {
+//		return usuariosDTO;
+//	}
 }

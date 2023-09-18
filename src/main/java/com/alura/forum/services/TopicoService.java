@@ -82,22 +82,11 @@ public class TopicoService {
 	}
 	
 	private Topico copyDTO(TopicoDTO dto, Topico entity) {
-//		String msgErroUsuario = "Erro: Busca do Autor na inserção do topico com id " 
-//				+ dto.getUsuario().getId()
-//				+ " não encontrado.";
-//		String msgErroCurso = "Erro: Busca do Curso na inserção do topico com id " 
-//				+ dto.getUsuario().getId()
-//				+ " não encontrado.";
 		entity.setTitulo(dto.getTitulo());
 		entity.setMensagem(dto.getMensagem());
 		entity.setDataCriacao(LocalDateTime.now());
 		entity.setStatus(dto.getStatus());
-//		Curso curso = cursoRepository
-//				.findById(dto.getCurso().getId())
-//				.orElseThrow(() -> new ServiceNotFoundException(msgErroCurso));
-//		Usuario autor = usuarioRepository
-//				.findById(dto.getUsuario().getId())
-//				.orElseThrow(() -> new ServiceNotFoundException(msgErroUsuario));
+		entity.setUsuario(dto.getUsuario());
 		return entity;
 	}
 }

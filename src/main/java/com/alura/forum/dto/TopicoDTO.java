@@ -2,7 +2,6 @@ package com.alura.forum.dto;
 
 import java.time.LocalDateTime;
 
-import com.alura.forum.entities.Curso;
 import com.alura.forum.entities.Topico;
 import com.alura.forum.entities.Usuario;
 import com.alura.forum.entities.enuns.StatusTopico;
@@ -17,21 +16,18 @@ public class TopicoDTO {
 
 	private Usuario usuario;
 
-	private Curso curso;
-
 	public TopicoDTO() {
 	}
 
 	public TopicoDTO(Long id, String titulo, String mensagem, 
 			LocalDateTime dataCriacao, StatusTopico status, 
-			Usuario usuario, Curso curso) {
+			Usuario autor) {
 		this.id = id;
 		this.titulo = titulo;
 		this.mensagem = mensagem;
 		this.dataCriacao = dataCriacao;
 		this.status = status;
-		this.usuario = usuario;
-		this.curso = curso;
+		this.usuario = autor;
 	}
 
 	public TopicoDTO(Topico entity) {
@@ -40,6 +36,7 @@ public class TopicoDTO {
 		mensagem = entity.getMensagem();
 		dataCriacao = entity.getDataCriacao();
 		status = entity.getStatus();
+		usuario = entity.getUsuario();
 	}
 
 	public Long getId() {
@@ -84,9 +81,5 @@ public class TopicoDTO {
 
 	public Usuario getUsuario() {
 		return usuario;
-	}
-
-	public Curso getCurso() {
-		return curso;
 	}
 }

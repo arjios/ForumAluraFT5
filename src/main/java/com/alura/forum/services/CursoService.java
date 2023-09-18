@@ -10,11 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.alura.forum.dto.CursoDTO;
-import com.alura.forum.dto.UsuarioDTO;
 import com.alura.forum.entities.Curso;
-import com.alura.forum.entities.Usuario;
 import com.alura.forum.repositories.CursoRepository;
-import com.alura.forum.repositories.UsuarioRepository;
 import com.alura.forum.services.exceptions.ServiceNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -25,8 +22,8 @@ public class CursoService {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
-	@Autowired
-	private UsuarioRepository usuarioRepository;
+//	@Autowired
+//	private UsuarioRepository usuarioRepository;
 	
 	@Transactional
 	public List<CursoDTO> buscarTodosCursos() {
@@ -46,15 +43,13 @@ public class CursoService {
 		String msgErro = "Erro: Busca do Curso com id " + id + " não encontrado.";
 		Curso curso = cursoRepository.findById(id)
 				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
-		return new CursoDTO(curso, curso.getUsuarios());	
+//		return new CursoDTO(curso, curso.getUsuarios());
+		return new CursoDTO(curso);
 	}
 	
 	@Transactional
 	public CursoDTO inserirCurso(CursoDTO cursoDTO) {
-		String msgErroInserir = "Erro: Curso já existe.";
-		if(cursoRepository.getReferenceById(cursoDTO.getId()) != null) {
-			throw new ServiceNotFoundException(msgErroInserir);
-		}
+//		String msgErroInserir = "Erro: Curso já existe.";
 		Curso curso = new Curso();
 		curso.setNome(cursoDTO.getNome());
 		curso.setCategoria(cursoDTO.getCategoria());
@@ -62,22 +57,19 @@ public class CursoService {
 		return new CursoDTO(curso);	
 	}
 	
-	@Transactional
-	public CursoDTO inserirUsuarioCurso(Long id, CursoDTO cursoDTO) {
-//		String msgErroInserir = "Erro: Não foi posssivel inserir um novo Curso.";
-		Curso curso = new Curso();
-		curso = cursoRepository
-				.getReferenceById(id);
-//				.orElseThrow(() -> new ServiceNotFoundException(msgErroInserir));
-		for (UsuarioDTO user : cursoDTO.getUsuarios()) {
-			Usuario usuario = usuarioRepository
-					.getReferenceById(user.getId());
-//					.orElseThrow(() -> new ServiceNotFoundException(msgErroInserir));
-			curso.getUsuarios().add(usuario);
-		}
-		curso = cursoRepository.save(curso);
-		return new CursoDTO(curso);	
-	}
+//	@Transactional
+//	public CursoDTO inserirUsuarioCurso(Long id, CursoDTO cursoDTO) {
+//		Curso curso = new Curso();
+//		curso = cursoRepository
+//				.getReferenceById(id);
+//		for (UsuarioDTO user : cursoDTO.getUsuarios()) {
+//			Usuario usuario = usuarioRepository
+//					.getReferenceById(user.getId());
+//			curso.getUsuarios().add(usuario);
+//		}
+//		curso = cursoRepository.save(curso);
+//		return new CursoDTO(curso);	
+//	}
 	
 	@Transactional
 	public CursoDTO atualizarCurso(Long id, CursoDTO cursoDTO) {

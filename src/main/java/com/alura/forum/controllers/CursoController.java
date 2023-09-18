@@ -52,12 +52,12 @@ public class CursoController {
 		return ResponseEntity.ok().body(cursoDTO);
 	}
 	
-	@PutMapping(value = "/usuario/{id}")
-	public ResponseEntity<CursoDTO> inserirUsuarioCurso(@PathVariable Long id, @RequestBody  CursoDTO cursoDTO){
-		String msgErroAtualizar= "Erro: Não foi posssivel alterar o Curso de id: " + id;
-		cursoDTO = cursoService.inserirUsuarioCurso(id, cursoDTO);
-		return ResponseEntity.ok().body(cursoDTO);
-	}
+//	@PutMapping(value = "/usuario/{id}")
+//	public ResponseEntity<CursoDTO> inserirUsuarioCurso(@PathVariable Long id, @RequestBody  CursoDTO cursoDTO){
+//		String msgErroAtualizar= "Erro: Não foi posssivel alterar o Curso de id: " + id;
+//		cursoDTO = cursoService.inserirUsuarioCurso(id, cursoDTO);
+//		return ResponseEntity.ok().body(cursoDTO);
+//	}
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<CursoDTO>  alterarCurso(@PathVariable Long id, @RequestBody  CursoDTO cursoDTO) {

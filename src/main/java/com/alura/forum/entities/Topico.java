@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -26,22 +28,23 @@ public class Topico implements Serializable {
 	private String mensagem;
 	private LocalDateTime dataCriacao = LocalDateTime.now();
 	private StatusTopico status = StatusTopico.NAO_RESPONDIDO;
-	private Usuario autor;
-	private Curso curso;
+	
+	@ManyToOne
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
 	
 	public Topico() {
 	}
 
 	public Topico(Long id, @NotEmpty String titulo, String mensagem, LocalDateTime dataCriacao, 
 			StatusTopico status,
-			Usuario autor, Curso curso) {
+			Usuario autor) {
 		this.id = id;
 		this.titulo = titulo;
 		this.mensagem = mensagem;
 		this.dataCriacao = dataCriacao;
 		this.status = status;
-		this.autor = autor;
-		this.curso = curso;
+		this.usuario = autor;
 	}
 
 	public Long getId() {
@@ -84,20 +87,12 @@ public class Topico implements Serializable {
 		this.status = status;
 	}
 
-	public Usuario getAutor() {
-		return autor;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setAutor(Usuario autor) {
-		this.autor = autor;
-	}
-
-	public Curso getCurso() {
-		return curso;
-	}
-
-	public void setCurso(Curso curso) {
-		this.curso = curso;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	@Override

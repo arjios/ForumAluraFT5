@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,12 +55,12 @@ public class TopicoController {
 				 .toUri(); 
 		return ResponseEntity.created(uri).body(dto);	
 	}
-//	
-//	@PutMapping(value = "/{id}")
-//	public ResponseEntity<TopicoDTO> atualizarTopico(@PathVariable Long id, @RequestBody TopicoDTO dto) {
-//		TopicoDTO topico = topicoService.atualizarTopico(id, dto);
-//		return ResponseEntity.ok().body(topico);
-//	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<TopicoDTO> atualizarTopico(@PathVariable Long id, @RequestBody TopicoDTO dto) {
+		TopicoDTO topico = topicoService.atualizarTopico(id, dto);
+		return ResponseEntity.ok().body(topico);
+	}
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> deleteTopico(@PathVariable Long id) {
