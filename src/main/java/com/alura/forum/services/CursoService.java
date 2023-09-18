@@ -1,6 +1,6 @@
 package com.alura.forum.services;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,8 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.alura.forum.dto.CursoDTO;
+import com.alura.forum.dto.UsuarioDTO;
 import com.alura.forum.entities.Curso;
+import com.alura.forum.entities.Usuario;
 import com.alura.forum.repositories.CursoRepository;
+import com.alura.forum.repositories.UsuarioRepository;
 import com.alura.forum.services.exceptions.ServiceNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -22,51 +25,78 @@ public class CursoService {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
 	@Transactional
-	public List<CursoDTO> buscaTodosCursos() {
-		List<Curso> cursos =  new ArrayList<>();
-		cursos = cursoRepository.findAll();
+	public List<CursoDTO> buscarTodosCursos() {
+		List<Curso> cursos = cursoRepository.findAll();
 		return cursos.stream().map(c -> new CursoDTO(c)).collect(Collectors.toList());
+		
 	}
 	
 	@Transactional
-	public Page<CursoDTO> buscaCursosPAginados(Pageable pageable) {
-		Page<Curso> pages = cursoRepository.findAll(pageable);
-		return pages.map(p -> new CursoDTO(p));
+	public Page<CursoDTO> buscarTodosCursosPaginados(Pageable pageable) {
+		Page<Curso> cursos = cursoRepository.findAll(pageable);
+		return cursos.map(c -> new CursoDTO(c));	
 	}
 	
 	@Transactional
-	public CursoDTO buscaCursoPorId(Long id) {
+	public CursoDTO buscarCursoPorId(Long id) {
 		String msgErro = "Erro: Busca do Curso com id " + id + " não encontrado.";
-		Curso curso = cursoRepository
-				.findById(id)
+		Curso curso = cursoRepository.findById(id)
 				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
-		return new CursoDTO(curso);
+		return new CursoDTO(curso, curso.getUsuarios());	
 	}
 	
 	@Transactional
-	public CursoDTO inserirCurso(CursoDTO dto) {
+	public CursoDTO inserirCurso(CursoDTO cursoDTO) {
+		String msgErroInserir = "Erro: Curso já existe.";
+		if(cursoRepository.getReferenceById(cursoDTO.getId()) != null) {
+			throw new ServiceNotFoundException(msgErroInserir);
+		}
 		Curso curso = new Curso();
-		curso.setCategoria(dto.getCategoria());
-		curso.setNome(dto.getNome());
+		curso.setNome(cursoDTO.getNome());
+		curso.setCategoria(cursoDTO.getCategoria());
 		curso = cursoRepository.save(curso);
-		return new CursoDTO(curso);
-	}	
+		return new CursoDTO(curso);	
+	}
 	
 	@Transactional
-	public CursoDTO atualizarCurso(Long id, CursoDTO dto) {
-		String msgErro = "Erro: Não existe Curso com id " + id + " para atualizar.";
-		Curso curso = cursoRepository
+	public CursoDTO inserirUsuarioCurso(Long id, CursoDTO cursoDTO) {
+//		String msgErroInserir = "Erro: Não foi posssivel inserir um novo Curso.";
+		Curso curso = new Curso();
+		curso = cursoRepository
+				.getReferenceById(id);
+//				.orElseThrow(() -> new ServiceNotFoundException(msgErroInserir));
+		for (UsuarioDTO user : cursoDTO.getUsuarios()) {
+			Usuario usuario = usuarioRepository
+					.getReferenceById(user.getId());
+//					.orElseThrow(() -> new ServiceNotFoundException(msgErroInserir));
+			curso.getUsuarios().add(usuario);
+		}
+		curso = cursoRepository.save(curso);
+		return new CursoDTO(curso);	
+	}
+	
+	@Transactional
+	public CursoDTO atualizarCurso(Long id, CursoDTO cursoDTO) {
+		String msgErroAtualizar= "Erro: Não foi posssivel atualizar o Curso de id: " + id;
+		Curso curso = new Curso();
+		curso = cursoRepository
 				.findById(id)
-				.orElseThrow(() -> new ServiceNotFoundException(msgErro));
-		curso.setCategoria(dto.getCategoria());
-		curso.setNome(dto.getNome());
+				.orElseThrow(() -> new ServiceNotFoundException(msgErroAtualizar));
+		curso.setNome(cursoDTO.getNome());
+		curso.setCategoria(cursoDTO.getCategoria());
 		curso = cursoRepository.save(curso);
-		return new CursoDTO(curso);
-	}	
+		return new CursoDTO(curso);	
+	}
 	
-	@Transactional
-	public void excluirCurso(Long id) {
+	public void excluirCursoPorId(Long id) {
+		String msgErro = "Erro: Exclusão do Curso com id " + id + " não encontrado.";
+		if(cursoRepository.getReferenceById(id) == null) {
+			throw new ServiceNotFoundException(msgErro);
+		}
 		cursoRepository.deleteById(id);
-	}	
+	}
 }

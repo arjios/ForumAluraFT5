@@ -1,6 +1,5 @@
 package com.alura.forum.controllers;
 
-import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,59 +14,55 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.alura.forum.dto.UsuarioDTO;
-import com.alura.forum.dto.UsuarioNovoDTO;
 import com.alura.forum.services.UsuarioService;
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
-	
+
 	@Autowired
 	private UsuarioService usuarioService;
 	
 	@GetMapping
-	public ResponseEntity<List<UsuarioDTO>> buscarUsuarios() {
-		List<UsuarioDTO> usuarios = usuarioService.listarUsuarios();
-		return ResponseEntity.ok().body(usuarios);
+	public ResponseEntity<List<UsuarioDTO>> listarTodosUsuarios() {
+		List<UsuarioDTO> result = usuarioService.buscarTodosUsuarios();
+		return ResponseEntity.ok().body(result);
 	}
 	
 	@GetMapping(value = "/pages")
-	public ResponseEntity<Page<UsuarioDTO>> buscarUsuariosPaginado(Pageable pageable) {
-		Page<UsuarioDTO> pages = usuarioService.listarUsuarioPaginados(pageable);
-		return ResponseEntity.ok().body(pages);
+	public ResponseEntity<Page<UsuarioDTO>> listarodosUsuariosPaginados(Pageable pageable) {
+		Page<UsuarioDTO> usuarios = usuarioService.buscarTodosUsuariosPaginados(pageable);
+		return  ResponseEntity.ok().body(usuarios);	
 	}
-	
+
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<UsuarioDTO> buscarUsuarioPorId(@PathVariable Long id) {
-		UsuarioDTO usuario = usuarioService.buscarUsuarioPorId(id);
-		return ResponseEntity.ok().body(usuario);
+	public ResponseEntity<UsuarioDTO> listarUsuarioPorId(@PathVariable Long id) {
+		String msgErro = "Erro: Busca do Usuario com id " + id + " não encontrado.";
+		UsuarioDTO dto = usuarioService.buscarUsuarioPorId(id);
+		return ResponseEntity.ok().body(dto);
 	}
 	
 	@PostMapping
-	public ResponseEntity<UsuarioNovoDTO> inserirUsuario(@RequestBody UsuarioNovoDTO dto) {
-		dto = usuarioService.inserirUsuario(dto);
-		URI uri = ServletUriComponentsBuilder
-				 .fromCurrentRequest()
-				 .path("/{id}")
-				 .buildAndExpand(dto.getId())
-				 .toUri();
-		return ResponseEntity.created(uri).body(dto);
+	public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+		String msgErroInserir = "Erro: Não foi posssivel criar um novo Usuario.";
+		usuarioDTO = usuarioService.inserirUsuario(usuarioDTO);
+		return ResponseEntity.ok().body(usuarioDTO);
 	}
-	
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UsuarioDTO> alterarUsuario(@PathVariable Long id,
-			@RequestBody UsuarioNovoDTO dto) {
-		UsuarioDTO usuario = usuarioService.atualizarUsuario(id, dto);
-		return ResponseEntity.ok().body(usuario);
+	public ResponseEntity<UsuarioDTO>  alterarUsuario(@PathVariable Long id, @RequestBody  UsuarioDTO usuarioDTO) {
+		String msgErroAtualizar= "Erro: Não foi posssivel alterar o Usuario de id: " + id;
+		usuarioDTO = usuarioService.atualizarUsuario(id, usuarioDTO);
+		return ResponseEntity.ok().body(usuarioDTO);
 	}
 	
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
-		usuarioService.excluirUsuario(id);
-		return ResponseEntity.noContent().build();
+	public void deletarUsuarioPorId(@PathVariable  Long id) {
+		String msgErro = "Erro: Exclusão do Usuario com id " + id + " não encontrado.";
+		usuarioService.excluirUsuarioPorId(id);
 	}
-
+	
+	
 }

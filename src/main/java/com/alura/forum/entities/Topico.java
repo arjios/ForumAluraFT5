@@ -1,5 +1,6 @@
 package com.alura.forum.entities;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -9,27 +10,38 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "tb_topico")
-public class Topico {
+public class Topico implements Serializable {	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotEmpty
 	private String titulo;
 	private String mensagem;
 	private LocalDateTime dataCriacao = LocalDateTime.now();
 	private StatusTopico status = StatusTopico.NAO_RESPONDIDO;
-	
-	@ManyToOne
-	@JoinColumn(name = "usuario_id")
 	private Usuario autor;
+	private Curso curso;
 	
 	public Topico() {
+	}
+
+	public Topico(Long id, @NotEmpty String titulo, String mensagem, LocalDateTime dataCriacao, 
+			StatusTopico status,
+			Usuario autor, Curso curso) {
+		this.id = id;
+		this.titulo = titulo;
+		this.mensagem = mensagem;
+		this.dataCriacao = dataCriacao;
+		this.status = status;
+		this.autor = autor;
+		this.curso = curso;
 	}
 
 	public Long getId() {
@@ -78,6 +90,14 @@ public class Topico {
 
 	public void setAutor(Usuario autor) {
 		this.autor = autor;
+	}
+
+	public Curso getCurso() {
+		return curso;
+	}
+
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.alura.forum.dto.TopicoDTO;
 import com.alura.forum.entities.Topico;
 import com.alura.forum.repositories.TopicoRepository;
+import com.alura.forum.services.exceptions.ServiceDatabaseException;
 import com.alura.forum.services.exceptions.ServiceNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -48,12 +50,7 @@ public class TopicoService {
 	@Transactional
 	public TopicoDTO inserirTopico(TopicoDTO dto) {
 		Topico topico = new Topico();
-		topico.setTitulo(dto.getTitulo());
-		topico.setMensagem(dto.getMensagem());
-		topico.setDataCriacao(LocalDateTime.now());
-		topico.setStatus(dto.getStatus());
-		topico.setAutor(dto.getAutor());
-		topico = topicoRepository.save(topico);
+		topico = topicoRepository.save(copyDTO(dto,topico));
 		return new TopicoDTO(topico);		
 	}
 	
@@ -70,9 +67,37 @@ public class TopicoService {
 		return new TopicoDTO(topico);
 	}
 	
-	@Transactional
 	public void excluirTopico(Long id) {
-		topicoRepository.deleteById(id);
+		String msgErro = "Erro: Não existe Usuario com id " + id + " para excluir.";
+		String msgData = "Erro: Violação de integridade para o " + id + " na exclusão.";
+		if(!topicoRepository.existsById(id)) {
+			throw new ServiceNotFoundException(msgErro);
+		}
+		try {
+			topicoRepository.deleteById(id);			
+		} catch(DataIntegrityViolationException dive) {
+			throw new ServiceDatabaseException(msgData);
+		}
+
 	}
 	
+	private Topico copyDTO(TopicoDTO dto, Topico entity) {
+//		String msgErroUsuario = "Erro: Busca do Autor na inserção do topico com id " 
+//				+ dto.getUsuario().getId()
+//				+ " não encontrado.";
+//		String msgErroCurso = "Erro: Busca do Curso na inserção do topico com id " 
+//				+ dto.getUsuario().getId()
+//				+ " não encontrado.";
+		entity.setTitulo(dto.getTitulo());
+		entity.setMensagem(dto.getMensagem());
+		entity.setDataCriacao(LocalDateTime.now());
+		entity.setStatus(dto.getStatus());
+//		Curso curso = cursoRepository
+//				.findById(dto.getCurso().getId())
+//				.orElseThrow(() -> new ServiceNotFoundException(msgErroCurso));
+//		Usuario autor = usuarioRepository
+//				.findById(dto.getUsuario().getId())
+//				.orElseThrow(() -> new ServiceNotFoundException(msgErroUsuario));
+		return entity;
+	}
 }

@@ -1,32 +1,39 @@
 package com.alura.forum.dto;
 
-import com.alura.forum.entities.Curso;
+import java.util.HashSet;
+import java.util.Set;
 
-import jakarta.validation.constraints.NotEmpty;
+import com.alura.forum.entities.Curso;
+import com.alura.forum.entities.Usuario;
 
 public class CursoDTO {
 
 	private Long id;
-	@NotEmpty
 	private String nome;
-	@NotEmpty
 	private String categoria;
+	
+	private Set<UsuarioDTO> usuariosDTO = new HashSet<>();
 	
 	public CursoDTO() {
 	}
 
-	public CursoDTO(Long id, @NotEmpty String nome, @NotEmpty String categoria) {
+	public CursoDTO(Long id, String nome, String categoria) {
 		this.id = id;
 		this.nome = nome;
 		this.categoria = categoria;
 	}
-
+	
 	public CursoDTO(Curso entity) {
 		id = entity.getId();
 		nome = entity.getNome();
 		categoria = entity.getCategoria();
 	}
-	
+
+	public CursoDTO(Curso entity, Set<Usuario> usuarios) {
+		this(entity);
+		usuarios.forEach(u -> usuariosDTO.add(new UsuarioDTO(u)));
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -49,5 +56,9 @@ public class CursoDTO {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+
+	public Set<UsuarioDTO> getUsuarios() {
+		return usuariosDTO;
 	}
 }

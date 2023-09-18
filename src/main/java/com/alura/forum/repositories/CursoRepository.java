@@ -6,4 +6,6 @@ import com.alura.forum.entities.Curso;
 
 public interface CursoRepository extends JpaRepository<Curso, Long>{
 
+	
+	
 }

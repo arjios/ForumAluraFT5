@@ -2,31 +2,30 @@ package com.alura.forum.dto;
 
 import com.alura.forum.entities.Usuario;
 
-import jakarta.validation.constraints.NotEmpty;
-
-
 public class UsuarioDTO {
 
 	private Long id;
-	@NotEmpty
 	private String nome;
-	@NotEmpty
 	private String email;
+	private String senha;
 	
 	public UsuarioDTO() {
 	}
 
-	public UsuarioDTO(Long id, @NotEmpty String nome, @NotEmpty String email) {
+	public UsuarioDTO(Long id, String nome, String email, String senha) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
+		this.senha = senha;
 	}
 
 	public UsuarioDTO(Usuario entity) {
 		id = entity.getId();
 		nome = entity.getNome();
-		email = entity.getEmail();
+		email = entity.getUsername();
+		senha = entity.getPassword();
 	}
+
 	public Long getId() {
 		return id;
 	}
@@ -49,6 +48,14 @@ public class UsuarioDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 }
